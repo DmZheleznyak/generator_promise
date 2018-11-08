@@ -7,21 +7,27 @@ function sum(a, b) {
 	 const b = yield Promise.resolve(10);
 	 const c = yield 20;
 	 const d = yield a+b+c;
-	 console.log(d)
+	 console.log(d);
  }
  
  function run(gen) {
-	 const generator = gen()
-	 const firstValue = generator.next().value()
-	 // const secondValue = generator.next(firstValue).value
-	 generator.next(firstValue).value
-	 const secondVal = 10
-	
-	 const thirdValue = generator.next( secondVal ).value
-	 const fourthValue = generator.next(thirdValue).value
-	 const fifthValue = generator.next(fourthValue).value
+ 
+	 var generator = gen()
+ 
+	 for ( let valueOfYield of generator ) {
+ 
+	 }
+ 
  }
  
- run(asyncFlow)
+ run(asyncFlow)		// вывести значение 40 из ф-ии генератор
  
- // распечататься должно 40
+ // в цикле перебрать генератора значения возвращаемые из operatora yield 
+ // делать проверку если значения равны function,
+ // делать проверку содержит ли значение promise 
+ // если это промис то включить новый генератор, 
+ // создать ф-ию которая извлекает значение из promise в нужном нам потоке
+ // значение извлекается и прокидывается как аргумент
+ // эти переменные прокидываются как аргументы в метод при итерировании next()
+ 
+ // https://learn.javascript.ru/generator
