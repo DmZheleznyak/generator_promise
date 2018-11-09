@@ -7,45 +7,34 @@ function sum(a, b) {
 	 const b = yield Promise.resolve(10);
 	 const c = yield 20;
 	 const d = yield a+b+c;
-	 console.log(d);
+	 console.log(`D: - `, d);
  }
  
  function run(gen) {
  
-	 var generator = gen()
+	 var generatorForPromise = gen()   
  
-	 for (let value of generator) {
+	 function executor( generator, yieldValue ) {
+		 var next = generator.next( yieldValue )
  
-	 
-		 // console.log(`valueOfYiledGenerator:`, value )
+			 if ( typeof next.value === 'function'  ) {
+				 return executor( generator, next.value() )
+			 }
  
-		 if (typeof value === 'function' ) var firstYield = value()
+			 if ( next.value.toString() === "[object Promise]" ) {
+				 console.log(`promise next.value`, next.value)
+				 return next.value.then( result => {
+					 console.log( `RESULT:`, result )
+					 return executor( generator, result )
+				 } )
+			 }
  
-		 if ( value.toString() === "[object Promise]" ) {
+			 return executor(generator, next.value)
+			
  
-			 var generatorForPromise = gen()   
- // новый цикл для перебора нового генератора
-			 function executor( generator, yieldPromise ) {
-				 var next = generator.next( yieldPromise )
-				 
-				 if (!next.done) {
-					 console.log( next )
-					 if ( next.value.toString() === "[object Promise]" ) {
-						 console.log(`promise next.value`, next.value)
-						 next.value.then( k => k )
-					 }
+	 }  
  
-					 return executor(generator)
-				 } else {
-					 return console.log(`next in else -`, next )
-				 }
-			 }  
- 
-			 executor( generatorForPromise )  
- 
-		 }
- 
-	 }
+	 executor( generatorForPromise )  
  
  }
  
