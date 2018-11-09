@@ -17,11 +17,12 @@ function run(gen) {
 	function executor( generator, yieldValue ) {
 
 		var next = generator.next( yieldValue )
+		
 		if ( !next.done ) {
-			
+
 			if ( typeof next.value === 'function'  ) return executor( generator, next.value() )
 
-			if ( next.value.toString() === "[object Promise]" ) return next.value.then( result => executor( generator, result ) )
+			if ( next.value instanceof Promise ) return next.value.then( result => executor( generator, result ) )
 
 			if ( typeof next.value === 'number') return executor( generator, next.value )
 
