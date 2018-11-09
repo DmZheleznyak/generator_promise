@@ -14,13 +14,42 @@ function sum(a, b) {
  
 	 var generator = gen()
  
-	 for ( let valueOfYield of generator ) {
+	 for (let value of generator) {
+ 
+	 
+		 // console.log(`valueOfYiledGenerator:`, value )
+ 
+		 if (typeof value === 'function' ) var firstYield = value()
+ 
+		 if ( value.toString() === "[object Promise]" ) {
+ 
+			 var generatorForPromise = gen()   
+ // новый цикл для перебора нового генератора
+			 function executor( generator, yieldPromise ) {
+				 var next = generator.next( yieldPromise )
+				 
+				 if (!next.done) {
+					 console.log( next )
+					 if ( next.value.toString() === "[object Promise]" ) {
+						 console.log(`promise next.value`, next.value)
+						 next.value.then( k => k )
+					 }
+ 
+					 return executor(generator)
+				 } else {
+					 return console.log(`next in else -`, next )
+				 }
+			 }  
+ 
+			 executor( generatorForPromise )  
+ 
+		 }
  
 	 }
  
  }
  
- run(asyncFlow)		// вывести значение 40 из ф-ии генератор
+ run(asyncFlow)
  
  // в цикле перебрать генератора значения возвращаемые из operatora yield 
  // делать проверку если значения равны function,
@@ -29,5 +58,7 @@ function sum(a, b) {
  // создать ф-ию которая извлекает значение из promise в нужном нам потоке
  // значение извлекается и прокидывается как аргумент
  // эти переменные прокидываются как аргументы в метод при итерировании next()
+ // console.log - это ф-ия 
  
  // https://learn.javascript.ru/generator
+  
